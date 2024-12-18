@@ -16,7 +16,7 @@ public class RouteValidator {
     public static boolean isSecured (ServerHttpRequest request){
         return  openApiEndpoints
                 .stream()
-                .anyMatch (uri -> request.getURI().getPath().contains(uri));
+                .noneMatch (uri -> request.getURI().getPath().contains(uri));
     }
 
 

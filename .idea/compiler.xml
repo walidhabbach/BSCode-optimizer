@@ -8,6 +8,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="api-gateway" />
+        <module name="storage" />
         <module name="discovery-service" />
         <module name="authentication" />
       </profile>
@@ -18,6 +19,7 @@
       <module name="api-gateway" options="-parameters" />
       <module name="authentication" options="-parameters" />
       <module name="discovery-service" options="-parameters" />
+      <module name="storage" options="-parameters" />
     </option>
   </component>
 </project>
