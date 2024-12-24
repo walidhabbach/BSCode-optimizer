@@ -60,7 +60,6 @@ public class UserServiceImpl implements UserService {
 						.orElseThrow(() -> new ResourceNotFoundException(
 						String.format("User not found with id: %s", userDto.getId ())
 				));
-
 				System.out.println("isAuthenticated");
 
 				String jwtToken = jwtUtil.generateToken( customUserDetails);

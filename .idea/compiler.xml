@@ -8,8 +8,9 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="api-gateway" />
-        <module name="storage" />
+        <module name="config-service" />
         <module name="discovery-service" />
+        <module name="chat" />
         <module name="authentication" />
       </profile>
     </annotationProcessing>
@@ -18,8 +19,9 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="api-gateway" options="-parameters" />
       <module name="authentication" options="-parameters" />
+      <module name="chat" options="-parameters" />
+      <module name="config-service" options="-parameters" />
       <module name="discovery-service" options="-parameters" />
-      <module name="storage" options="-parameters" />
     </option>
   </component>
 </project>

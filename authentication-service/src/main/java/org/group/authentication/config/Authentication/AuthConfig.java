@@ -25,8 +25,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class AuthConfig {
-	@Value ("${cors.allowed-origins}")
-	private String allowedOrigins;
+
 	@Autowired
 	private  AuthenticationFilter authenticationFilter;
 	@Bean
