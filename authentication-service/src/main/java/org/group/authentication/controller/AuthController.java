@@ -80,4 +80,10 @@ public class AuthController {
         return ResponseEntity.accepted().build();
     }
 
+    @PostMapping("/predict")
+    public ResponseEntity<String> predict() {
+        return ResponseEntity.ok("this.userService.findAll()");
+    }
+
+
 }

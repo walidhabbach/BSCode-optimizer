@@ -1,8 +1,11 @@
 package org.group.chat.service.implementations;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.group.chat.FeignClient.ApiModelClient;
 import org.group.chat.dto.ChatDto;
 import org.group.chat.helper.mappers.ChatMapper;
+import org.group.chat.model.Chat;
 import org.group.chat.repository.ChatRepository;
 import org.group.chat.service.interfaces.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,30 +16,32 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ChatServiceImpl implements ChatService {
     @Autowired
     private ChatRepository storageRepository;
 
+    private final ApiModelClient apiModelClient;
+
     @Override
-    public ChatDto save(ChatDto storageDto) {
-        return ChatMapper.map(this.storageRepository.save(ChatMapper.map(storageDto)));
+    public ChatDto optimize(ChatDto chatDto){
+        String optimizedCode = this.apiModelClient.optimizeCode (chatDto.getText ());
+
+        Chat input = this.storageRepository.save (ChatMapper.map (chatDto));
+        Chat output = Chat.builder ().idUser (chatDto.getIdUser ()).text (optimizedCode).isInput (false).build ();
+        output = this.storageRepository.save (output);
+        return ChatMapper.map (output);
     }
 
     @Override
-    public List<ChatDto> findAll() {
+    public List<ChatDto> findAll(){
         System.out.println ("findAll");
-        return this.storageRepository.findAll ()
-                .stream ()
-                .map (ChatMapper::map)
-                .collect (Collectors.toList ());
+        return this.storageRepository.findAll ().stream ().map (ChatMapper::map).collect (Collectors.toList ());
     }
 
     @Override
-    public List<ChatDto> findAllByIDUser(Long idUser) {
-        return this.storageRepository.findAllByIdUser (idUser)
-                .stream ()
-                .map (ChatMapper::map)
-                .collect (Collectors.toList ());
+    public List<ChatDto> findAllByIDUser(Long idUser){
+        return this.storageRepository.findAllByIdUser (idUser).stream ().map (ChatMapper::map).collect (Collectors.toList ());
     }
 
 }

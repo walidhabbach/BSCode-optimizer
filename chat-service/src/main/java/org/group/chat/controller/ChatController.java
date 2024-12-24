@@ -17,9 +17,9 @@ public class ChatController {
     private ChatService storageService;
 
 
-    @PostMapping("/save")
-    public ResponseEntity<ChatDto> save(@RequestBody  ChatDto storageDto) {
-         return ResponseEntity.status(HttpStatus.CREATED).body(this.storageService.save (storageDto));
+    @PostMapping("/predict")
+    public ResponseEntity<ChatDto> optimize(@RequestBody  ChatDto storageDto) {
+         return ResponseEntity.status(HttpStatus.CREATED).body(this.storageService.optimize (storageDto));
     }
 
     @GetMapping("/all")
