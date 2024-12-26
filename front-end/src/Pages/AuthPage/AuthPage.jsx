@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router";
 import { login } from "../../services/authService";
 import styles from "./AuthPage.module.css";
-import { useContext, useEffect, useState } from "react";
+import {  useState } from "react";
  const AuthPage = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");

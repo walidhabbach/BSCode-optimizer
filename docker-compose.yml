@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
 
   config-service:
@@ -8,25 +6,26 @@ services:
     ports:
       - '8888:8888'
     environment:  
-      CONFIG_SERVER_PORT: 8888
-      EUREKA_PORT: 8761
-      ZIPKIN_ENDPOINT: http://zipkin:9411/api/v2/spans
-      EUREKA_HOSTNAME: discovery-service
-      EUREKA_URL: http://discovery-service:8761/eureka
-      #API GATEWAY
-      GATEWAY_CORS_URL: http://front-end:5173
-      API_GATEWAY_SERVER_PORT: 8222
-      #Auth Service
-      AUTH_SERVER_PORT: 8050 
-      AUTH_DATABASE_URL: jdbc:postgresql://db-authentication:5432/users
-      AUTH_DATABASE_USER: root
-      AUTH_DATABASE_PASSWORD: 2002
-      #Chat Service
-      CHAT_SERVER_PORT: 8090
-      CHAT_DATABASE_URL: jdbc:postgresql://db-chat:5432/chat
-      CHAT_DATABASE_USER: root
-      CHAT_DATABASE_PASSWORD: 2002
-      API_MODEL_URL: http://authentication-service:8050/api/auth 
+      - CONFIG_LOCATION=classpath:/configurations/docker
+      # - CONFIG_SERVER_PORT=8888
+      # - EUREKA_PORT=8761
+      # - ZIPKIN_ENDPOINT=http://zipkin:9411/api/v2/spans
+      # - EUREKA_HOSTNAME=discovery-service
+      # - EUREKA_URL=http://discovery-service:8761/eureka
+      # #API GATEWAY
+      # - GATEWAY_CORS_URL=http://front-end:5173
+      # - API_GATEWAY_SERVER_PORT=8222
+      # #Auth Service
+      # - AUTH_SERVER_PORT=8050 
+      # - AUTH_DATABASE_URL=jdbc:postgresql://db-authentication:5432/users
+      # - AUTH_DATABASE_USER=root
+      # - AUTH_DATABASE_PASSWORD=2002
+      # #Chat Service
+      # - CHAT_SERVER_PORT=8090
+      # - CHAT_DATABASE_URL=jdbc:postgresql://db-chat:5433/chat
+      # - CHAT_DATABASE_USER=root
+      # - CHAT_DATABASE_PASSWORD=2002
+      # - API_MODEL_URL=http://authentication-service:8050/api/auth 
 
     healthcheck:
       test: ["CMD", "wget", "--spider", "--quiet", "http://config-service:8888/actuator/health"]
@@ -87,7 +86,7 @@ services:
     ports:
       - "5173:5173" 
     environment:
-      - VITE_API_URL=http://gateway-service:8222 
+      - VITE_API_URL=http://localhost:8222 
     networks:
       - microservices-net
   authentication-service:
@@ -119,9 +118,9 @@ services:
     container_name: chat-service
     build: ./micro-services/chat-service
     ports:
-      - '8089:8089'
+      - '8090:8090'
     expose:
-      - '8089'
+      - '8090'
     environment: 
       SPRING_CONFIG_IMPORT: configserver:http://config-service:8888
     entrypoint: /bin/sh -c "

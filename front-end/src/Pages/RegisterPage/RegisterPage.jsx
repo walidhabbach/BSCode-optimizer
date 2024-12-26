@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, {  useState } from 'react';
 import styles from './RegisterPage.module.css';
 import { useNavigate } from 'react-router';
 import { signup } from '../../services/authService'; 

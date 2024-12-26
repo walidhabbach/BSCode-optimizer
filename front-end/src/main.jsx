@@ -5,15 +5,15 @@ import './index.css'
 import { QueryClientProvider, QueryClient } from 'react-query'
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ErrorPage from "./pages/ErrorPage/ErrorPage.jsx";
-import AuthPage from './Pages/AuthPage/AuthPage.jsx';
- import RegisterPage from './Pages/RegisterPage/RegisterPage.jsx';
+import AuthPage from './pages/AuthPage/AuthPage.jsx';
+ import RegisterPage from './pages/RegisterPage/RegisterPage.jsx';
 
 const queryClient = new QueryClient()
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-    // errorElement: <ErrorPage />,
+    errorElement: <ErrorPage />,
   },
   {
     path: "/login",

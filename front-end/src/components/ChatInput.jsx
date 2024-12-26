@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import send from '../assets/send-icon.png';
-import loadingIcon from '../assets/loading.gif';
+ import loadingIcon from '../assets/loading.gif';
 
 const ChatInput = ({ sendMessage, loading, maxHeight = 200 }) => {
   const [value, setValue] = useState('');
