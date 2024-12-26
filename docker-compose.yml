@@ -1,0 +1,205 @@
+version: '3.8'
+
+services:
+
+  config-service:
+    container_name: config-service
+    build: ./micro-services/config-service
+    ports:
+      - '8888:8888'
+    environment:  
+      CONFIG_SERVER_PORT: 8888
+      EUREKA_PORT: 8761
+      ZIPKIN_ENDPOINT: http://zipkin:9411/api/v2/spans
+      EUREKA_HOSTNAME: discovery-service
+      EUREKA_URL: http://discovery-service:8761/eureka
+      #API GATEWAY
+      GATEWAY_CORS_URL: http://front-end:5173
+      API_GATEWAY_SERVER_PORT: 8222
+      #Auth Service
+      AUTH_SERVER_PORT: 8050 
+      AUTH_DATABASE_URL: jdbc:postgresql://db-authentication:5432/users
+      AUTH_DATABASE_USER: root
+      AUTH_DATABASE_PASSWORD: 2002
+      #Chat Service
+      CHAT_SERVER_PORT: 8090
+      CHAT_DATABASE_URL: jdbc:postgresql://db-chat:5432/chat
+      CHAT_DATABASE_USER: root
+      CHAT_DATABASE_PASSWORD: 2002
+      API_MODEL_URL: http://authentication-service:8050/api/auth 
+
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "--quiet", "http://config-service:8888/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - microservices-net
+
+  discovery-service:
+    depends_on:
+      - config-service
+    container_name: discovery-service
+    build: ./micro-services/discovery-service
+    ports:
+      - '8761:8761'
+    environment: 
+      SPRING_CONFIG_IMPORT: configserver:http://config-service:8888
+    
+    entrypoint: /bin/sh -c "
+      echo 'Waiting for config-service to be ready...';
+      while ! wget -qO- http://config-service:8888/actuator/health | grep '\"status\":\"UP\"'; do
+        echo 'Config service not ready, checking again...';
+        sleep 5;
+      done;
+      echo 'config-service is ready. Starting discovery-service.'; 
+      java -jar app.jar"
+    networks:
+      - microservices-net
+
+  gateway-service:
+    depends_on:
+      - discovery-service
+    container_name: gateway-service
+    build: ./micro-services/api-gateway
+    ports:
+      - '8222:8222'
+    expose:
+      - '8222'
+    environment: 
+      SPRING_CONFIG_IMPORT: configserver:http://config-service:8888
+    entrypoint: /bin/sh -c "
+      echo 'Waiting for discovery-service to be ready...';
+      while ! wget -qO- http://discovery-service:8761/actuator/health | grep '\"status\":\"UP\"'; do
+        echo 'discovery service not ready, checking again...';
+        sleep 5;
+      done;
+      echo 'discovery-service is ready. Starting gateway-service.'; 
+      java -jar app.jar"
+    networks:
+      - microservices-net
+
+  front-end:
+    depends_on:
+      - gateway-service
+    build: ./front-end
+    container_name: front-end
+    ports:
+      - "5173:5173" 
+    environment:
+      - VITE_API_URL=http://gateway-service:8222 
+ 
+  authentication-service:
+    depends_on:
+      - discovery-service
+      - db-authentication
+    container_name: authentication-service
+    build: ./micro-services/authentication-service
+    ports:
+      - '8050:8050'
+    expose:
+      - '8050'
+    environment: 
+      - SPRING_CONFIG_IMPORT=configserver:http://config-service:8888
+    entrypoint: /bin/sh -c "
+      echo 'Waiting for discovery-service to be ready...';
+      while ! wget -qO- http://discovery-service:8761/actuator/health | grep '\"status\":\"UP\"'; do
+        echo 'discovery service not ready, checking again...';
+        sleep 5;
+      done;
+      echo 'discovery-service is ready. Starting authentication-service.'; 
+      java -jar app.jar"
+  
+  chat-service:
+    depends_on:
+      - discovery-service
+      - db-chat
+    container_name: chat-service
+    build: ./micro-services/chat-service
+    ports:
+      - '8089:8089'
+    expose:
+      - '8089'
+    environment: 
+      - SPRING_CONFIG_IMPORT=configserver:http://config-service:8888
+    entrypoint: /bin/sh -c "
+      echo 'Waiting for discovery-service to be ready...';
+      while ! wget -qO- http://discovery-service:8761/actuator/health | grep '\"status\":\"UP\"'; do
+        echo 'discovery service not ready, checking again...';
+        sleep 5;
+      done;
+      echo 'discovery-service is ready. Starting chat-service.'; 
+      java -jar app.jar"
+
+  db-authentication:
+    container_name: db-authentication
+    image: postgres:16
+    environment:
+      POSTGRES_DB: users
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 2002
+      PGDATA: /data/postgres
+    volumes:
+      - db-authentication:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - microservices-net
+    restart: unless-stopped
+
+  db-chat:
+    container_name: db-chat
+    image: postgres:16
+    environment:
+      POSTGRES_DB: chat
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 2002
+      PGDATA: /data/postgres
+    volumes:
+      - db-chat:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - microservices-net
+    restart: unless-stopped
+
+
+  zipkin:
+    container_name: zipkin
+    image: openzipkin/zipkin
+    ports:
+      - '9411:9411'
+    networks:
+      - microservices-net
+
+networks:
+  microservices-net:
+    driver: bridge
+volumes:
+  db-authentication:
+  db-chat:  
+
+
+
+  # chat-service:
+  #   container_name: chat-service
+  #   build: ./micro-services/chat-service
+  #   ports:
+  #     - '8089:8089'
+  #   expose:
+  #     - '8089'
+  #   environment:
+  #     - SPRING_CONFIG_IMPORT=configserver:http://config-service:8888
+  #   depends_on:
+  #     springify-discovery-service:
+  #       condition: service_healthy
+  #     mysql-db-user:
+  #       condition: service_healthy
+  #     mysql-db-project:
+  #       condition: service_healthy
+
+
+
+
+ 
+ 
