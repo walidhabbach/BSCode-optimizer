@@ -12,6 +12,9 @@
         <option value="$PROJECT_DIR$/config-service/pom.xml" />
         <option value="$PROJECT_DIR$/micro-services/authentication-service/pom.xml" />
         <option value="$PROJECT_DIR$/micro-services/chat-service/pom.xml" />
+        <option value="$PROJECT_DIR$/micro-services/config-service/pom.xml" />
+        <option value="$PROJECT_DIR$/micro-services/api-gateway/pom.xml" />
+        <option value="$PROJECT_DIR$/micro-services/discovery-service/pom.xml" />
       </list>
     </option>
   </component>

@@ -1,4 +1,4 @@
-package org.microservice.authentication.config.mapper;
+package org.group.authentication.config.mapper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;

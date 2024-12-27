@@ -9,8 +9,8 @@
         <outputRelativeToContentRoot value="true" />
         <module name="api-gateway" />
         <module name="config-service" />
-        <module name="chat" />
         <module name="discovery-service" />
+        <module name="chat" />
         <module name="authentication" />
       </profile>
     </annotationProcessing>
