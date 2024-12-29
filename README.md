@@ -138,10 +138,10 @@ The development of BSCode-Optimizer was a collaborative effort led by an expert 
 
 ### Core Team
 
-- **Marouane Asmih**: Lead Developer, specializing in integrating BSJCode-1-Stable and implementing Flask APIs.
-- **Ahmed Elmessaoudi**: AI Researcher, fine-tuning Terjman-Ultra for multilingual support and improving translation accuracy.
-- **Fatima Zahra Bennani**: Software Engineer, focusing on backend optimizations and API scalability.
-- **Sarah Alami**: Linguist and NLP Specialist, responsible for curating datasets for Moroccan Darija translations.
+- **Marouane Asmih**
+- **Ahmed Elmessaoudi**
+- **Habbach Oualid**
+- **LamrabetChaymae**
 
 ### Technologies and Tools Used
 - **Programming Languages**: Python, Java
